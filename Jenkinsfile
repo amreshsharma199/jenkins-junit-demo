@@ -1,10 +1,10 @@
 pipeline {
-    agent any
+    agent { label 'jenkinsslave' }
 
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/amreshsharma199/python-docker-test-demo.git'
+                git 'https://github.com/amreshsharma199/jenkins-junit-demo.git'
             }
         }
 
