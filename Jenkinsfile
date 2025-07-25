@@ -2,24 +2,53 @@ pipeline {
     agent { label 'jenkinsslave' }
 
     stages {
-        stage('Test in Docker') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    def myImage = docker.build("python-test")
-                    myImage.inside {
-                        sh 'python3 -m pytest test_app.py --junitxml=results.xml'
+                    dockerImage = docker.build("pytest-image")
+                }
+            }
+        }
+
+        stage('Run Tests in Docker') {
+            steps {
+                script {
+                    dockerImage.inside {
+                        sh 'pytest test_app.py --junitxml=results.xml'
                     }
                 }
             }
         }
 
-        stage('Publish Report') {
+        stage('Publish Test Report') {
             steps {
                 junit 'results.xml'
             }
         }
     }
 }
+// pipeline {
+//     agent { label 'jenkinsslave' }
+
+//     stages {
+//         stage('Test in Docker') {
+//             steps {
+//                 script {
+//                     def myImage = docker.build("python-test")
+//                     myImage.inside {
+//                         sh 'python3 -m pytest test_app.py --junitxml=results.xml'
+//                     }
+//                 }
+//             }
+//         }
+
+//         stage('Publish Report') {
+//             steps {
+//                 junit 'results.xml'
+//             }
+//         }
+//     }
+// }
 // pipeline {
 //     agent { label 'jenkinsslave' }
 
