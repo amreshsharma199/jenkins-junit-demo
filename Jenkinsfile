@@ -2,21 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Install dependencies') {
+        stage('Clone') {
             steps {
-                sh 'pip3 install -r requirements.txt'
+                git 'https://github.com/amreshsharma199/python-docker-test-demo.git'
             }
         }
 
-        stage('Run tests') {
+        stage('Test in Docker') {
             steps {
-                sh 'pytest --junitxml=report.xml'
-            }
-        }
-
-        stage('Publish JUnit Report') {
-            steps {
-                junit 'report.xml'
+                script {
+                    docker.build('my-python-app').inside {
+                        sh 'pytest test_app.py'
+                    }
+                }
             }
         }
     }
